@@ -189,6 +189,19 @@ class Heroku::Command::Apps < Heroku::Command::Base
 
   alias_command "open", "apps:open"
 
+  # apps:deploy
+  #
+  # Deploy a slug to an app
+  #
+  def deploy
+    slug_file = args.shift.strip
+    redisplay "Uploading #{slug_file} as a new release... "
+    version = heroku.deploy(extract_app, slug_file)
+    display "done, #{version}"
+  end
+
+  alias_command "deploy", "apps:deploy"
+
   # apps:destroy
   #
   # permanently destroy an app

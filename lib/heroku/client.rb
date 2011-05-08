@@ -90,6 +90,15 @@ class Heroku::Client
     delete("/apps/#{name}").to_s
   end
 
+  # Deploy a slug (a tar.gz file) to the app
+  def deploy(app_name, slug_file_path)
+    slug = File.read(slug_file_path)
+    metadata = json_decode(get("/apps/#{app_name}/releases/new"))
+    RestClient.put(metadata['slug_put_url'], slug, :content_type => nil)
+    response = post("/apps/#{app_name}/releases", json_encode(metadata))
+    json_decode(response)['release']
+  end
+
   # Get a list of collaborators on the app, returns an array of hashes each with :email
   def list_collaborators(app_name)
     doc = xml(get("/apps/#{app_name}/collaborators").to_s)
