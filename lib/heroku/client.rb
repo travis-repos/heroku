@@ -2,6 +2,7 @@ require 'rexml/document'
 require 'rest_client'
 require 'uri'
 require 'time'
+require 'tempfile'
 require 'heroku/auth'
 require 'heroku/helpers'
 require 'heroku/version'
@@ -90,13 +91,37 @@ class Heroku::Client
     delete("/apps/#{name}").to_s
   end
 
-  # Deploy a slug (a tar.gz file) to the app
-  def deploy(app_name, slug_file_path)
-    slug = File.read(slug_file_path)
+  # Deploy a raw directory or repository directly without a git push
+  def deploy(app_name, deploy_dir)
+    slug_file = generate_slug(deploy_dir)
+
     metadata = json_decode(get("/apps/#{app_name}/releases/new"))
-    RestClient.put(metadata['slug_put_url'], slug, :content_type => nil)
-    response = post("/apps/#{app_name}/releases", json_encode(metadata))
+    RestClient.put(metadata['slug_put_url'], File.read(slug_file), :content_type => nil)
+
+    payload = {
+      "app_id"       => app_name,
+      "slug_size"    => File.size(slug_file),
+      "stack"        => "cedar",
+      "slug_put_key" => meta_data['slug_put_key'],
+    }
+    response = post("/apps/#{app_name}/releases", json_encode(payload))
     json_decode(response)['release']
+  end
+
+  # Generate a slug file from a directory.
+  def generate_slug(dir, stack = "cedar")
+    dir_path  = File.expand_path(dir)
+    slug_file = Tempfile.new("heroku_slug").tap(&:close)
+    meta_file = Tempfile.new("heroku_meta")
+    begin
+      meta_file.puts("stack: cedar")
+      meta_file.close
+      system("slugc --meta #{meta_file.path} --repo-dir #{dir_path} --output-slug #{slug_file.path}")
+    ensure
+      meta_file.close
+      meta_file.unlink
+    end
+    slug_file
   end
 
   # Get a list of collaborators on the app, returns an array of hashes each with :email

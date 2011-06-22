@@ -191,12 +191,12 @@ class Heroku::Command::Apps < Heroku::Command::Base
 
   # apps:deploy
   #
-  # Deploy a slug to an app
+  # Deploy a directory to an app
   #
   def deploy
-    slug_file = args.shift.strip
-    redisplay "Uploading #{slug_file} as a new release... "
-    version = heroku.deploy(extract_app, slug_file)
+    deploy_dir = (args.shift || ".").strip
+    redisplay "Uploading #{deploy_dir} as a new release... "
+    version = heroku.deploy(extract_app, deploy_dir)
     display "done, #{version}"
   end
 
