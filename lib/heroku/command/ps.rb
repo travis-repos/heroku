@@ -121,5 +121,20 @@ class Heroku::Command::Ps < Heroku::Command::Base
 
   alias_command "scale", "ps:scale"
 
+  # ps:kill PROCESS SIGNAL
+  #
+  # send a signal to an app process
+  #
+  def kill
+    app = extract_app
+    if ps = args.shift
+      signal = args.shift
+      heroku.ps_kill(app, :ps => ps, :signal => signal)
+    end
+    display "done"
+  end
+
+  alias_command "restart", "ps:restart"
+
 end
 
