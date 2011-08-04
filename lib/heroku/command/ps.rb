@@ -121,20 +121,34 @@ class Heroku::Command::Ps < Heroku::Command::Base
 
   alias_command "scale", "ps:scale"
 
-  # ps:kill PROCESS SIGNAL
+  # ps:kill [SIGNAL] PROCESS
   #
   # send a signal to an app process
   #
   def kill
     app = extract_app
-    if ps = args.shift
-      signal = args.shift
-      heroku.ps_kill(app, :ps => ps, :signal => signal)
-    end
-    display "done"
+
+    signal =
+      if ((args.size < 1) || (args.size > 2))
+        error "Usage: heroku ps:kill [SIGNAL] PROCESS"
+      elsif (args.size == 1)
+        "TERM"
+      else
+        args.shift
+      end
+
+    opt =
+      if (args.first =~ /.+\..+/)
+        ps = args.first
+        display "Sending SIG#{signal} to #{ps} process...", false
+        {:ps => ps}
+      else
+        error "Usage: heroku ps:kill [SIGNAL] PROCESS"
+      end
+
+    heroku.ps_kill(app, opt.merge(:signal => signal))
+    display("done")
   end
 
-  alias_command "restart", "ps:restart"
-
+  alias_command "kill", "ps:kill"
 end
-
