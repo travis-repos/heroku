@@ -143,7 +143,9 @@ class Heroku::Command::Ps < Heroku::Command::Base
         display "Sending SIG#{signal} to #{ps} process...", false
         {:ps => ps}
       else
-        error "Usage: heroku ps:kill [SIGNAL] PROCESS"
+        type = args.first
+        display "Sending SIG#{signal} to #{type} processes...", false
+        { :type => type }
       end
 
     heroku.ps_kill(app, opt.merge(:signal => signal))
