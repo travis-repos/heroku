@@ -153,4 +153,28 @@ class Heroku::Command::Ps < Heroku::Command::Base
   end
 
   alias_command "kill", "ps:kill"
+
+  # ps:stop [SIGNAL] PROCESS
+  #
+  # send a signal to an app process
+  #
+  def stop
+    app = extract_app
+
+    opt =
+      if (args.first =~ /.+\..+/)
+        ps = args.first
+        display "Stopping #{ps} process...", false
+        {:ps => ps}
+      else
+        type = args.first
+        display "Stopping #{type} processes...", false
+        { :type => type }
+      end
+
+    heroku.ps_stop(app, opt)
+    display("done")
+  end
+
+  alias_command "stop", "ps:stop"
 end

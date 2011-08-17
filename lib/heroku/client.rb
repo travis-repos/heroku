@@ -517,6 +517,10 @@ Console sessions require an open dyno to use for execution.
     post("/apps/#{app}/ps/kill", opts)
   end
 
+  def ps_stop(app, opts={})
+    post("/apps/#{app}/ps/stop", opts)
+  end
+
   def confirm_billing
     post("/user/#{escape(@user)}/confirm_billing").to_s
   end
