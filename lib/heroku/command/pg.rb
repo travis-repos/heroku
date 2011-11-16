@@ -86,6 +86,7 @@ module Heroku::Command
           response = heroku_shared_postgresql_client(db[:url]).reset_database
           detected_app = app
           heroku.add_config_vars(detected_app, response)
+          heroku.add_config_vars(detected_app, {"DATABASE_URL" => response['HEROKU_SHARED_POSTGRESQL_URL']}) if db[:default]
           display " done", false
 
           begin
@@ -119,6 +120,7 @@ module Heroku::Command
           detected_app = app
           display "Setting new password...", false
           heroku.add_config_vars(detected_app, response)
+          heroku.add_config_vars(detected_app, {"DATABASE_URL" => response['HEROKU_SHARED_POSTGRESQL_URL']}) if db[:default]
           display " done", false
           begin
             release = heroku.releases(detected_app).last
