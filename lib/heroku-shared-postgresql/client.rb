@@ -14,7 +14,8 @@ require "json"
          "#{@heroku_shared_postgresql_host}/client",
          :headers => {
            :x_heroku_gem_version => Heroku::Client.version,
-           :x_heroku_shared_postgresql_token => @database_sha
+           :x_heroku_shared_postgresql_token => @database_sha,
+           :accept => 'application/json'
          }
        )
     end

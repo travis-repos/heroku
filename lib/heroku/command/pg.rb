@@ -29,10 +29,9 @@ module Heroku::Command
     #
     def ingress
       deprecate_dash_dash_db("pg:ingress")
-      abort " !  Temporary ingress is not available for #{db[:name]}, try `pg:psql` instead" if db[:name] == Resolver.shared_addon_prefix
-      uri = generate_ingress_uri("Granting ingress for 60s")
+      uri = generate_ingress_uri
       display "Connection info string:"
-      display "   \"dbname=#{uri.path[1..-1]} host=#{uri.host} user=#{uri.user} password=#{uri.password} sslmode=required\""
+      display "   \"dbname=#{uri.path[1..-1]} host=#{uri.host} port=#{uri.port} user=#{uri.user} password=#{uri.password} sslmode=require\""
     end
 
     # pg:promote <DATABASE>
