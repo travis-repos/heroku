@@ -47,7 +47,7 @@ describe Resolver do
   context 'only yobuko database' do
     let(:config) do
        { 'DATABASE_URL'        => 'postgres://yobuko',
-         'HEROKU_SHARED_POSTGRESQL_URL' => 'postgres://yobuko' }
+         'HEROKU_SHARED_POSTGRESQL_BLACK_URL' => 'postgres://yobuko' }
     end
 
     it 'returns the yobuko url when asked for DATABASE' do
@@ -98,7 +98,7 @@ describe Resolver do
     let(:config) do
       { 'DATABASE_URL' => 'postgres://red',
         'SHARED_DATABASE_URL' => 'postgres://shared',
-        'HEROKU_SHARED_POSTGRESQL_URL' => 'postgres://yobuko',
+        'HEROKU_SHARED_POSTGRESQL_BLACK_URL' => 'postgres://yobuko',
         'HEROKU_POSTGRESQL_PERIWINKLE_URL' => 'postgres://pari',
         'HEROKU_POSTGRESQL_RED_URL' => 'postgres://red' }
     end

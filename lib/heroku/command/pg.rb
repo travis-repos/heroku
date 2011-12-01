@@ -86,7 +86,7 @@ module Heroku::Command
           response = heroku_shared_postgresql_client(db[:url]).reset_database
           detected_app = app
           heroku.add_config_vars(detected_app, response)
-          heroku.add_config_vars(detected_app, {"DATABASE_URL" => response['HEROKU_SHARED_POSTGRESQL_URL']}) if db[:default]
+          heroku.add_config_vars(detected_app, {"DATABASE_URL" => response['url']}) if db[:default]
           display " done", false
 
           begin
@@ -114,13 +114,13 @@ module Heroku::Command
       working_display 'Resetting password' do
         case db[:name]
         when "SHARED_DATABASE"
-          display " !    Resetting password is not supported on SHARED_DATABASE"
+          output_with_bang "Resetting password is not supported on SHARED_DATABASE"
         when Resolver.shared_addon_prefix
           response = heroku_shared_postgresql_client(db[:url]).reset_password
           detected_app = app
           display "Setting new password...", false
           heroku.add_config_vars(detected_app, response)
-          heroku.add_config_vars(detected_app, {"DATABASE_URL" => response['HEROKU_SHARED_POSTGRESQL_URL']}) if db[:default]
+          heroku.add_config_vars(detected_app, {"DATABASE_URL" => response['url']}) if db[:default]
           display " done", false
           begin
             release = heroku.releases(detected_app).last
@@ -129,7 +129,7 @@ module Heroku::Command
           end
           display "."
         else
-          display " !    Resetting password is not yet supported on #{db[:name]}"
+          error "Resetting password is not yet supported on #{db[:name]}"
         end
       end
     end
@@ -142,7 +142,7 @@ module Heroku::Command
       follower_db = resolve_db(:required => 'pg:unfollow')
 
       if ["SHARED_DATABASE", Resolver.shared_addon_prefix].include? follower_db[:name]
-        abort " !    #{follower_db[:name]} does not support forking and following."
+        output_with_bang "#{follower_db[:name]} does not support forking and following."
       end
 
       follower_name = follower_db[:pretty_name]
@@ -251,13 +251,13 @@ private
       db = resolve_db(:allow_default => true)
       case db[:name]
       when "SHARED_DATABASE"
-        abort " !  Cannot ingress to a shared database" if "SHARED_DATABASE" == db[:name]
+        error "Cannot ingress to a shared database" if "SHARED_DATABASE" == db[:name]
       when Resolver.shared_addon_prefix
         working_display("#{action} to #{db[:name]}")
         return URI.parse(db[:url])
       else
         hpc = heroku_postgresql_client(db[:url])
-        abort " !  The database is not available for ingress" unless hpc.get_database[:available_for_ingress]
+        error "The database is not available for ingress" unless hpc.get_database[:available_for_ingress]
         working_display("#{action} to #{db[:name]}") { hpc.ingress }
         return URI.parse(db[:url])
       end
@@ -273,6 +273,5 @@ private
       end
       @seen_progress = progress
     end
-
   end
 end
