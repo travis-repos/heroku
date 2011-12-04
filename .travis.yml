@@ -6,7 +6,4 @@ rvm:
 notifications:
   email: false
   webhooks:
-    on_success: always
-    on_failure: always
-    urls:
-      - http://www.postbin.org/13ztk0c
+    - http://www.postbin.org/13ztk0c
