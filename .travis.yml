@@ -6,4 +6,4 @@ rvm:
 notifications:
   email: false
   webhooks:
-    - http://www.postbin.org/qwdbam
+    - http://www.postbin.org/14elxcn
