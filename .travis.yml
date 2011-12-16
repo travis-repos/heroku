@@ -8,4 +8,4 @@ notifications:
   webhooks:
     - http://www.postbin.org/14elxcn
   campfire:
-    secure: sGNx80XZRjXZQnOR746deAE5XVqsdDh0lzq0Qy7wXoQ6v6iOj6q+5+WvS7Ri\nH8Avep69Xbsy8J1Aq//2eOfdBtBDXVkjN9CV8zf6X4NJ6AbMW3XqPsUtYR3y\nzYs/FU+iBn7zw6ITuzB9PX86TtYJqOZtdTLg5POOzUnVxn7eYPE=
+    secure: "sGNx80XZRjXZQnOR746deAE5XVqsdDh0lzq0Qy7wXoQ6v6iOj6q+5+WvS7Ri\nH8Avep69Xbsy8J1Aq//2eOfdBtBDXVkjN9CV8zf6X4NJ6AbMW3XqPsUtYR3y\nzYs/FU+iBn7zw6ITuzB9PX86TtYJqOZtdTLg5POOzUnVxn7eYPE="
